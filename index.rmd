@@ -122,6 +122,9 @@ head(garlic) #sorted by IDs
 #create new column using data from vector
 garlic$weight <- grams_24
 
+#renumber the rowname numbers
+rownames(garlic) <- 1:nrow(garlic)
+head(garlic)
 ```
 
 Here's a diagram of where each clove was planted.
