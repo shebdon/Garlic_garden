@@ -14,7 +14,7 @@ Last year (2023), my coworker gave me some of his famous home-grown, hard-neck v
 
 I'm tracking the weight of each clove at planting time to see if I can tell how clove weight at planting impacts the weight at harvest time. 
 
-This repo will help me track and analyze the data, while also serving as a tutorial in basic R programming skills for any interested viewers.
+This repo will help me track and analyze the data. I'm also showing some of the R code in case viewers want to follow along.
 
 ### Weights at time of planting
 ```{r}
@@ -25,7 +25,7 @@ grams_24 <- c(8, 17, 14, 20, 13, 13, 11, 15, 11,
 ```
 
 
-#### Summaray of weights of planted cloves
+#### Summary of weights of planted cloves
 ``` {r}
 summary(grams_24)
 ```
@@ -40,10 +40,10 @@ Since the cloves are replanted the same year the bulbs are harvested, I can use 
 store_grams_24 <- c(5, 2, 4, 3, 3, 8, 4, 3, 9, 4, 3, 2,
                     4, 4, 2, 2, 2, 3, 2, 2, 1, 1, 1)
 comparison <- data.frame(sow_weight = c(grams_24, store_grams_24),
-                     year = rep(2024, times = length(c(grams_24,
-                                                             store_grams_24))),
-                     source = c(rep("home-grown", times = length(grams_24)),
-                                rep("store", times = length(store_grams_24))))
+                         year = rep(2024, times = length(c(grams_24,
+                                                           store_grams_24))),
+                         source = c(rep("home-grown", times = length(grams_24)),
+                                    rep("store", times = length(store_grams_24)))) # nolint: line_length_linter.
 ```
 
 ##### Long form vs wide form data
