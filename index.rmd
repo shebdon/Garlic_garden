@@ -31,7 +31,7 @@ summary(grams_24)
 ```
 
 
-#### Comparison to store-bougth cloves
+#### Comparison to store-bought cloves
 A couple cloves were less than 1 gram. Even the 2-gram cloves were so small that they might not be worth the effort when cooking for a family.
 
 Since the cloves are replanted the same year the bulbs are harvested, I can use "year" to keep track of each generation. The 2023 cloves produced the 2024 bulbs which I "cracked" to get the 2024 cloves. Those will produce the 2025 bulbs, which... 
@@ -99,7 +99,6 @@ The `randomized_example` above is different every time you load this page. (As i
 
 The randomization I used is recorded as `planting_order`. Clove #`r planting_order[1]` is at the North East corner. Clove #`r planting_order[length(planting_order)]` is in the South West corner of the raised bed.
 
-This next block encodes the position of each clove.
 ``` {r}
 dimensions <- c(4, 9) #East to West, North to South
 row_from_east <- c(rep(c(1:dimensions[1]), each = dimensions[2]))
@@ -107,20 +106,44 @@ row_from_north <- c(rep(1:dimensions[2], times = dimensions[1]))
 
 garlic <- data.frame(id = planting_order,
                      from_east = row_from_east,
-                     from_north = row_from_north)
+                     from_north = row_from_north,
+                     year = rep(2024, times = length(id)))
 ```
 
+I'd like to merge the position information in the `garlic` dataframe with the weights in the `grams_24` vector.
+
+Since `garlic` is randomly ordered, we need to re-order it by `id` to match the order of the weigths in the `grams_24` vector.
+
+``` {r}
+head(garlic) #randomized IDs
+garlic <- garlic[order(garlic$id), ]
+head(garlic) #sorted by IDs
+
+#create new column using data from vector
+garlic$weight <- grams_24
+
+```
 
 Here's a diagram of where each clove was planted.
 ``` {r, echo=FALSE}
-p <- plot_ly(data = garlic, type = "scatter") %>%
+p <- plot_ly(data = garlic, type = "scatter", mode = "markers") %>%
   add_markers(x = ~from_east, y = ~from_north,
-              marker = list(size = ~id+10),
-              text = ~paste('Weight: ', id),
+              marker = list(color = 'rgb(17, 157, 255)',
+                            size = ~weight * 2,
+                            line = list(color = 'black',
+                                        width = 2)
+      ),
+              text = ~paste('<br> ID: ', id,
+                            '<br> Weight: ', weight, ' grams'),
               hoverinfo = 'text',
               showlegend = F ) %>%
   layout(xaxis = list(autorange = "reversed"),
          yaxis = list(autorange = "reversed"))
 p
 ```
+
+
+
+
+
 
