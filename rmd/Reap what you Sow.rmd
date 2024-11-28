@@ -1,6 +1,9 @@
 ---
 title: "Reap What You Sow"
-output: html_document
+output:
+  prettydoc::html_pretty:
+    theme: cayman
+    highlight: github
 knit: (function(inputFile, encoding) {
   rmarkdown::render(inputFile, encoding = encoding, output_dir = "../docs") })
 ---
@@ -11,9 +14,7 @@ library("plotly", quietly = TRUE)
 ```
 
 
-
-
-### Planting Strategy
+## Planting Strategy
 Garlic is generally planted in the fall and harvested in the summer. In my garden near the [Denver metro](https://dug.org/how-to-grow-garlic/#:~:text=On%20the%20High%20Plains%2C%20depending,The%20stalk%20will%20break.), that means mid October to early to mid July. 
 
 Several factors, not just clove weight, can impact growth: uneven soil/nutrient densities, irrigation/drainage, and wind/sun. 
@@ -24,9 +25,11 @@ I don't want my planting strategy to confound these factors with weight. If I pl
 
 I used R to help me randomize the planting locations. Assigned each clove an ID (number 1 through 36) then had R randomize the order.
 
-
-
 ``` {r}
+clove_weight <- c(8, 17, 14, 20, 13, 13, 11, 15, 11,
+                 10, 19, 19, 19, 13, 17, 13, 15, 11,
+                 12, 19, 14, 13, 21, 8, 5, 13, 12, 13,
+                 17, 9, 8, 17, 9, 20, 7, 13)
 id <- 1:36
 randomized_example <- sample(id)
 randomized_example
@@ -53,9 +56,9 @@ garlic <- data.frame(id = planting_order,
                      year = rep(2024, times = length(id)))
 ```
 
-I'd like to merge the position information in the `garlic` dataframe with the weights in the `grams_24` vector.
+I'd like to merge the position information in the `garlic` dataframe with the weights in the `clove_weight` vector.
 
-Since `garlic` is randomly ordered, we need to re-order it by `id` to match the order of the weigths in the `grams_24` vector.
+Since `garlic` is randomly ordered, we need to re-order it by `id` to match the order of the weigths in the `clove_weight` vector.
 
 ``` {r}
 head(garlic) #randomized IDs
@@ -63,7 +66,7 @@ garlic <- garlic[order(garlic$id), ]
 head(garlic) #sorted by IDs
 
 #create new column using data from vector
-garlic$weight <- grams_24
+garlic$weight <- clove_weight
 
 #renumber the rowname numbers
 rownames(garlic) <- 1:nrow(garlic)
