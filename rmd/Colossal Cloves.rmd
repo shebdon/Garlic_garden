@@ -1,0 +1,140 @@
+---
+title: "Colossal cloves"
+output:
+  prettydoc::html_pretty:
+    theme: cayman
+    highlight: github
+knit: (function(inputFile, encoding) {
+  rmarkdown::render(inputFile, encoding = encoding, output_dir = "../html") })
+
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+# Garden vs store varieties
+Most grocery stores sell softneck varieties of garlic, with many small cloves.
+
+My coworker gave me a hardneck garlic variety that consistently produces six large cloves per bulb.  
+
+Let's compare them. Along the way, we'll also make a file for storing our data for future seasons.
+
+### Home-grown cloves
+```{r}
+home_grams <- c(8, 17, 14, 20, 13, 13, 11, 15, 11,
+                10, 19, 19, 19, 13, 17, 13, 15, 11,
+                12, 19, 14, 13, 21, 8, 5, 13, 12, 13,
+                17, 9, 8, 17, 9, 20, 7, 13)
+```
+
+
+### Summary of home-grown cloves
+``` {r}
+options(digits = 2) #set precision of printed numbers
+summary(home_grams)
+```
+
+
+## Store-bought cloves
+A couple cloves were less than 1 gram. Even the 2-gram cloves were so small that they might not be worth the effort when cooking for a family.
+
+Since the cloves are replanted the same year the bulbs are harvested, I can use "year" to keep track of each generation. The 2023 cloves produced the 2024 bulbs which I "cracked" to get the 2024 cloves. Those will produce the 2025 bulbs, which... 
+
+``` {r}
+store_grams <- c(5, 2, 4, 3, 3, 8, 4, 3, 9, 4, 3, 2,
+                 4, 4, 2, 2, 2, 3, 2, 2, 1, 1, 1)
+summary(store_grams)
+```
+
+## Comparison home-grown vs store bought (hardneck vs softneck)
+We can compare two boxplots next to each other to compare the two garlic types
+``` {r}
+par(mfrow = c(1, 2)) #frame plots in 1 row w/ 2 cols
+boxplot(store_grams, ylab = "Weight (grams)")
+title("Store-bought cloves")
+boxplot(home_grams, ylab = "Weight (grams)")
+title("Home-grown cloves")
+```
+
+
+### Structured data
+The plots look great, but we had to write the code twice. As this project continues, I'll need to add new plots for each harvest.
+
+It's not too much work, but after a few years that will be a lot of code to track. And since it is only once a year, I'll probably forget some of the details.
+
+Instead, I can create a data structure that allows the plots to update every time I add new data.
+
+```{r}
+garlic_data <- data.frame(weight = c(home_grams, store_grams),
+                          year = rep(2024, times = length(c(home_grams,
+                                                            store_grams))),
+                          source = c(rep("home", times = length(home_grams)),
+                                     rep("store", times = length(store_grams))))
+
+head(garlic_data)
+tail(garlic_data)
+```
+
+### Long-form data
+In this format (called long format), each row represents an individual and each column represents a measurement of a property (weight, year, source).
+
+It might be tempting to have a column for store-bought cloves and a column for home-grown cloves. This spreads the weights over two columns, one if it's from the store, another if it's homegrown. It's better to have all the weights in one column, because R expects a 1:1 property-to-column ratio.
+
+Long format has many advantages when it comes to built-in features in R. 
+
+### Formulas in R
+Using "long-form" data, we can take advantage of formulas in R. 
+
+This formula (saved inside the "garlic_formula" variable), can be used to tell functions to report the weights grouped by the source and year.
+``` {r}
+garlic_formula <- weight ~ source + year
+```
+
+Many functions work with formulas to automatically "break down" the data in one column based on other columns.
+
+Boxplot takes the instructions from the formula and breaks down the weight data by the other columns.
+``` {r}
+boxplot(data = garlic_data, garlic_formula, ylab = "Weight (grams)")
+aggregate(data = garlic_data, garlic_formula,
+          FUN = summary, digits = 2) #digits is passed to the summary function
+```
+
+```{r}
+#create example future data set
+example_future <- data.frame("weight" = runif(25, 1, 20),
+                             "year" = rep(2025, times = 25),
+                             "source" = rep("home", times = 25)
+)
+
+
+#append future data to past data
+updated_garlic <- rbind(garlic_data, example_future)
+
+#see how updating the data updates the plot without changing the code
+boxplot(data = updated_garlic, garlic_formula, ylab = "Weight (grams)")
+```
+
+# Conclusions
+
+From the boxplots above and the summary table below, you can see why I like this garlic variety.
+
+The cloves are more than 4 times as big! That's lot easier to handle when cooking for a family. 
+
+### Saving data for next year
+I plan on measuring my home-grown cloves each year, but not measuring store-bought cloves.
+
+The dplyr package provides an excellent paradigm for filtering and selecting data.
+``` {r}
+require("dplyr")
+keep_data <- updated_garlic %>%
+  filter(source == "home" & year == 2024) %>%
+  select(!source)
+
+```
+
+As you can see from the summary below, I've only kept the data for the 2024 home-grown cloves, and I'm no longer tracking the source (since I'll only be tracking home-grown cloves).
+```{r}
+summary(keep_data)
+```
+
