@@ -5,7 +5,7 @@ output:
     theme: cayman
     highlight: github
 knit: (function(inputFile, encoding) {
-  rmarkdown::render(inputFile, encoding = encoding, output_dir = "../html") })
+  rmarkdown::render(inputFile, encoding = encoding, output_dir = "../docs") })
 
 ---
 
