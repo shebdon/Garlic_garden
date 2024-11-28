@@ -22,7 +22,7 @@ When he gave me a sample from his 2023 harvest, I made sure to save a few for pl
 I'm also a scientist looking for better ways to communicate data. So, I'm turning my little garlic garden into an experiment. I've heard that planting larger cloves leads to larger bulbs at harvest. In the 2024-2025 year, I'm tracking the size and position of the garlic to see how it affects growth. I may take inspiration from the common "iris" dataset and take measurements of the plants as well as the cloves at harvest.
 
 ## Reports
-Here are some links to several reports I've made analyzing and visualizing the data.
+Here are some links to a couple reports I made. These are for me to practice and they can serve as a source for people learning R.
 
 - [Colossal Cloves](./Colossal-Cloves.html)
 - [Reap What You Sow](./Reap-what-you-Sow.html)
